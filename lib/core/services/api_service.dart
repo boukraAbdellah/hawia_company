@@ -44,6 +44,9 @@ class ApiService {
     );
   }
   
+  // Expose Dio instance for services that need it
+  Dio get dio => _dio;
+  
   // GET request
   Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {
     return _dio.get(path, queryParameters: queryParameters);

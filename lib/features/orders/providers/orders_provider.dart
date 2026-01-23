@@ -272,24 +272,30 @@ class CompletedOrdersState {
   final PaginationInfo? pagination;
   final AvailableFilters? availableFilters;
   final bool isLoading;
+  final bool isLoadingMore;
   final String? error;
   final String? containerTypeFilter;
   final String? containerSizeFilter;
   final String? cityFilter;
   final DateTime? startDateFilter;
   final DateTime? endDateFilter;
+  final int currentPage;
+  final bool hasMorePages;
 
   CompletedOrdersState({
     this.orders = const [],
     this.pagination,
     this.availableFilters,
     this.isLoading = false,
+    this.isLoadingMore = false,
     this.error,
     this.containerTypeFilter,
     this.containerSizeFilter,
     this.cityFilter,
     this.startDateFilter,
     this.endDateFilter,
+    this.currentPage = 1,
+    this.hasMorePages = false,
   });
 
   CompletedOrdersState copyWith({
@@ -297,24 +303,30 @@ class CompletedOrdersState {
     PaginationInfo? pagination,
     AvailableFilters? availableFilters,
     bool? isLoading,
+    bool? isLoadingMore,
     String? error,
     String? containerTypeFilter,
     String? containerSizeFilter,
     String? cityFilter,
     DateTime? startDateFilter,
     DateTime? endDateFilter,
+    int? currentPage,
+    bool? hasMorePages,
   }) {
     return CompletedOrdersState(
       orders: orders ?? this.orders,
       pagination: pagination ?? this.pagination,
       availableFilters: availableFilters ?? this.availableFilters,
       isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       error: error,
       containerTypeFilter: containerTypeFilter ?? this.containerTypeFilter,
       containerSizeFilter: containerSizeFilter ?? this.containerSizeFilter,
       cityFilter: cityFilter ?? this.cityFilter,
       startDateFilter: startDateFilter ?? this.startDateFilter,
       endDateFilter: endDateFilter ?? this.endDateFilter,
+      currentPage: currentPage ?? this.currentPage,
+      hasMorePages: hasMorePages ?? this.hasMorePages,
     );
   }
 }
@@ -334,15 +346,21 @@ class CompletedOrdersNotifier extends StateNotifier<CompletedOrdersState> {
       final response = await apiService.getCompletedOrders(
         containerType: state.containerTypeFilter,
         containerSize: state.containerSizeFilter,
+        city: state.cityFilter,
         startDate: state.startDateFilter,
         endDate: state.endDateFilter,
         page: page,
       );
 
+      final hasMore = response.pagination != null &&
+          response.pagination!.currentPage < response.pagination!.totalPages;
+
       state = state.copyWith(
         orders: response.orders,
         pagination: response.pagination,
         availableFilters: response.availableFilters,
+        currentPage: page,
+        hasMorePages: hasMore,
         isLoading: false,
       );
     } catch (e, stackTrace) {
@@ -351,6 +369,42 @@ class CompletedOrdersNotifier extends StateNotifier<CompletedOrdersState> {
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),
+      );
+    }
+  }
+
+  Future<void> loadMoreOrders() async {
+    if (state.isLoadingMore || !state.hasMorePages) return;
+
+    state = state.copyWith(isLoadingMore: true);
+
+    try {
+      final nextPage = state.currentPage + 1;
+      final apiService = _ref.read(ordersApiServiceProvider);
+      final response = await apiService.getCompletedOrders(
+        containerType: state.containerTypeFilter,
+        containerSize: state.containerSizeFilter,
+        city: state.cityFilter,
+        startDate: state.startDateFilter,
+        endDate: state.endDateFilter,
+        page: nextPage,
+      );
+
+      final hasMore = response.pagination != null &&
+          response.pagination!.currentPage < response.pagination!.totalPages;
+
+      state = state.copyWith(
+        orders: [...state.orders, ...response.orders],
+        pagination: response.pagination,
+        currentPage: nextPage,
+        hasMorePages: hasMore,
+        isLoadingMore: false,
+      );
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error loading more completed orders: $e');
+      debugPrint('Stack trace: $stackTrace');
+      state = state.copyWith(
+        isLoadingMore: false,
       );
     }
   }

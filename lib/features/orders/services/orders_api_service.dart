@@ -85,6 +85,7 @@ class OrdersApiService {
   Future<CompletedOrdersResponse> getCompletedOrders({
     String? containerType,
     String? containerSize,
+    String? city,
     DateTime? startDate,
     DateTime? endDate,
     int page = 1,
@@ -97,6 +98,7 @@ class OrdersApiService {
 
     if (containerType != null) queryParams['containerType'] = containerType;
     if (containerSize != null) queryParams['containerSize'] = containerSize;
+    if (city != null) queryParams['city'] = city;
     if (startDate != null) {
       queryParams['startDate'] = startDate.toIso8601String();
     }

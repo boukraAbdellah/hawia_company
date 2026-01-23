@@ -7,6 +7,9 @@ import '../models/ban_details.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/services/auth_api.dart';
 import '../../../core/services/storage_service.dart';
+import '../../notifications/services/fcm_service.dart';
+import '../../notifications/services/websocket_service.dart';
+import '../../notifications/services/notification_api_service.dart';
 
 // Provider for API Service
 final apiServiceProvider = Provider<ApiService>((ref) => ApiService());
@@ -71,6 +74,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         isAuthenticated: true,
         isLoading: false,
       );
+
+      // Initialize notification services after successful login
+      _initializeNotificationServices(response.token);
     } on LoginError catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -85,8 +91,58 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  // Initialize notification services
+  void _initializeNotificationServices(String token) async {
+    try {
+      print('🔔 Initializing notification services...');
+      
+      // Wait a bit for FCM to initialize
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Get FCM token
+      final fcmToken = FCMService().fcmToken;
+      print('📱 FCM Token: $fcmToken');
+      
+      if (fcmToken != null) {
+        // Send FCM token to backend
+        print('📤 Sending FCM token to backend...');
+        final notificationApi = NotificationApiService(ApiService());
+        await notificationApi.updateFcmToken(fcmToken);
+        print('✅ FCM token sent successfully');
+      } else {
+        print('⚠️ FCM token is null - notifications may not work');
+      }
+
+      // Connect WebSocket for real-time notifications
+      print('🔌 Connecting WebSocket...');
+      await WebsocketService.instance.connect(token);
+      print('✅ WebSocket connected');
+    } catch (e) {
+      print('❌ Failed to initialize notification services: $e');
+    }
+  }
+
   // Logout
   Future<void> logout() async {
+    try {
+      // Get FCM token before clearing storage
+      final fcmToken = FCMService().fcmToken;
+      
+      // Remove FCM token from backend
+      if (fcmToken != null) {
+        final notificationApi = NotificationApiService(ApiService());
+        await notificationApi.removeFcmToken(fcmToken);
+      }
+
+      // Unsubscribe from FCM
+      await FCMService().unsubscribe();
+
+      // Disconnect WebSocket
+      WebsocketService.instance.disconnect();
+    } catch (e) {
+      print('❌ Error during logout cleanup: $e');
+    }
+
     await StorageService.clearAll();
     state = const AuthState();
   }

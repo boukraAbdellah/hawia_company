@@ -9,6 +9,8 @@ import '../../features/orders/screens/orders_main_screen.dart';
 import '../../features/drivers/screens/drivers_list_screen.dart';
 import '../../features/drivers/screens/driver_details_screen.dart';
 import '../../features/containers/screens/containers_summary_screen.dart';
+import '../../features/notifications/screens/notifications_screen.dart';
+import '../../features/notifications/screens/fcm_debug_screen.dart';
 import '../../features/support/screens/support_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../layout/main_layout.dart';
@@ -31,6 +33,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation.startsWith('/orders') ||
           state.matchedLocation.startsWith('/drivers') ||
           state.matchedLocation.startsWith('/containers') ||
+          state.matchedLocation.startsWith('/notifications') ||
           state.matchedLocation.startsWith('/support') ||
           state.matchedLocation.startsWith('/profile');
 
@@ -95,6 +98,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           currentIndex: 3,
           child: ContainersSummaryScreen(),
         ),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/fcm-debug',
+        builder: (context, state) => const FCMDebugScreen(),
       ),
       GoRoute(
         path: '/support',

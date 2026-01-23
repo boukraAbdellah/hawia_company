@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "596949342703",
+    "project_id": "hawia-6d313",
+    "storage_bucket": "hawia-6d313.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596949342703:android:a29ee4881b914647b0fe1a",
+        "android_client_info": {
+          "package_name": "com.hawia.company"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5pk1R0Xvj9hiC7ZT7l6LwCzYbHPUB4HU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596949342703:android:c8b0d5edabd58ecab0fe1a",
+        "android_client_info": {
+          "package_name": "com.hawia.hawia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5pk1R0Xvj9hiC7ZT7l6LwCzYbHPUB4HU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596949342703:android:dda5ed8687182094b0fe1a",
+        "android_client_info": {
+          "package_name": "com.hawia.hawia_driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5pk1R0Xvj9hiC7ZT7l6LwCzYbHPUB4HU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

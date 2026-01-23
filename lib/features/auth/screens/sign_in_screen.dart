@@ -254,8 +254,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 
                 // Remember Me Checkbox
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Checkbox(
+                      value: _rememberMe,
+                      onChanged: (value) {
+                        setState(() => _rememberMe = value ?? false);
+                      },
+                      activeColor: AppColors.primary,
+                    ),
                     const Text(
                       'حفظ معلومات الدخول',
                       style: TextStyle(
@@ -264,13 +271,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       ),
                       textDirection: TextDirection.rtl,
                     ),
-                    Checkbox(
-                      value: _rememberMe,
-                      onChanged: (value) {
-                        setState(() => _rememberMe = value ?? false);
-                      },
-                      activeColor: AppColors.primary,
-                    ),
+                    
                   ],
                 ),
                 

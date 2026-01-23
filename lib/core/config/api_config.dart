@@ -1,6 +1,10 @@
 class ApiConfig {
-  // static const String baseUrl = 'https://hawiacom.com';
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://hawiacom.com';
+  // static const String baseUrl = 'http://10.118.44.175:3000';
+  
+  // WebSocket URL
+  static const String websocketUrl = 'wss://hawiacom.com/ws';
+  // static const String websocketUrl = 'ws://10.118.44.175:3000/ws';
   
   // API Endpoints
   static const String login = '/api/company/auth/admin/login';

@@ -5,11 +5,38 @@ import '../models/order_models.dart' as models;
 import '../providers/orders_provider.dart';
 import '../widgets/order_details_modal.dart';
 
-class CompletedOrdersScreen extends ConsumerWidget {
+class CompletedOrdersScreen extends ConsumerStatefulWidget {
   const CompletedOrdersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CompletedOrdersScreen> createState() => _CompletedOrdersScreenState();
+}
+
+class _CompletedOrdersScreenState extends ConsumerState<CompletedOrdersScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.8) {
+      ref.read(completedOrdersProvider.notifier).loadMoreOrders();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final ordersState = ref.watch(completedOrdersProvider);
     final hasActiveFilters = ordersState.containerTypeFilter != null || 
                             ordersState.cityFilter != null;
@@ -133,10 +160,22 @@ class CompletedOrdersScreen extends ConsumerWidget {
                             ),
                           Expanded(
                             child: ListView.builder(
+                              controller: _scrollController,
                               padding: const EdgeInsets.all(16),
-                              itemCount: ordersState.orders.length,
-                              itemBuilder: (context, index) =>
-                                  _OrderCard(order: ordersState.orders[index]),
+                              itemCount: ordersState.orders.length + (ordersState.hasMorePages ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == ordersState.orders.length) {
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: ordersState.isLoadingMore
+                                          ? const CircularProgressIndicator()
+                                          : const SizedBox.shrink(),
+                                    ),
+                                  );
+                                }
+                                return _OrderCard(order: ordersState.orders[index]);
+                              },
                             ),
                           ),
                         ],

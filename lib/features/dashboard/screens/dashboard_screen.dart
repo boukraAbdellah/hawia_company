@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/dashboard_provider.dart';
 import '../widgets/container_stats_card.dart';
 import '../widgets/order_stats_card.dart';
@@ -30,6 +31,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         title: const Text('لوحة التحكم'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.bug_report),
+            tooltip: 'FCM Debug',
+            onPressed: () => context.push('/fcm-debug'),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(dashboardProvider.notifier).refresh(),
           ),
@@ -51,14 +57,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        ContainerStatsCard(
-                            stats: dashboardState.stats!.containerStats),
+                        if (dashboardState.stats?.containerStats != null)
+                          ContainerStatsCard(
+                              stats: dashboardState.stats!.containerStats),
                         const SizedBox(height: 16),
-                        OrderStatsCard(
-                            stats: dashboardState.stats!.orderStats),
+                        if (dashboardState.stats?.orderStats != null)
+                          OrderStatsCard(
+                              stats: dashboardState.stats!.orderStats),
                         const SizedBox(height: 16),
-                        DriverStatsCard(
-                            stats: dashboardState.stats!.driverStats),
+                        if (dashboardState.stats?.driverStats != null)
+                          DriverStatsCard(
+                              stats: dashboardState.stats!.driverStats),
                       ],
                     ),
                   ),

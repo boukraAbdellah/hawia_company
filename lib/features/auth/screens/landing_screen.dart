@@ -17,25 +17,17 @@ class LandingScreen extends StatelessWidget {
               const Spacer(),
               
               // Logo/Icon
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Icon(
-                  Icons.recycling_rounded,
-                  size: 70,
-                  color: AppColors.primary,
-                ),
+              Image.asset(
+                'assets/images/logo_pr.png',
+                width: 150,
+                height: 150,
               ),
               
               const SizedBox(height: 32),
               
               // App Name
               const Text(
-                'حاوية بلس',
+                'حاويتكم',
                 style: TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,

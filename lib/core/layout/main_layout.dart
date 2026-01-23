@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../config/app_theme.dart';
+import '../../shared/widgets/notification_icon_button.dart';
 
 
 class MainLayout extends StatelessWidget {
@@ -35,12 +36,16 @@ class MainLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'حاوية بلس',
+          'حاويتكم',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
+        leading: const Padding(
+          padding: EdgeInsets.only(right: 8),
+          child: NotificationIconButton(),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.support_agent),
